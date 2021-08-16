@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<!--meta http-equiv="X-UA-Compatible" content="IE=Edge"-->
+	<title>Droneboi key visualiser</title>
+	<link rel="stylesheet" href="src/style.css">
+</head>
+
+<body>
+	<div class="main" id="mainLayout">
+		<tiny class="margined">Warning! (currently) only works correctly with single-pieced ships with single-direction thrusters! Will be changed in the future. Made by Мнемотехник.</tiny>
+		
+		<div class="main margined">
+			<input class="dark" placeholder="Put your droboi ship key here" id="key">
+			<button class="dark" onclick="onParseKey()">Parse</button>
+		</div>
+		
+		<group class="hidden" id="shipArea">
+			<div class="main">
+				<canvas width="900px" height="400px" id="canvasMain"></canvas>
+			</div>
+			
+			<div class="main" id="buttonsRow">
+				<button onclick="onSaveCanvas()" class="dark">Save as image</button>
+				<input type="checkbox" id="comCheckbox" checked="true" class="atBottom">com</input>
+				<input type="checkbox" id="cotCheckbox" checked="true" class="atBottom">cot</input>
+				<input type="checkbox" id="corCheckbox" checked="true" class="atBottom">cor</input>
+			</div>
+		</group>
+	</div>
+	
+	<tiny class="margined" id="UwU">UwU</tiny>
+	
+	<canvas width="1600" height="80" id="canvasSprites" class="hidden"></canvas>
+	<img src="src/img/masks.png" id="imgMasks" class="hidden">
+	<img src="src/img/bases.png" id="imgBases" class="hidden">
+	
+	<script src="src/js/main.js"></script>
+	<script src="src/js/ship.js"></script>
+	<script src="src/js/parser.js"></script>
+	<script src="src/js/partsInfo.js"></script>
+	<script src="src/js/renderer.js"></script>
+	<script src="src/js/spriteGenerator.js"></script>
+</body>
+
+</html>
