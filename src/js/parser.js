@@ -56,8 +56,9 @@ function parseKey(key) {
 	return ship;
 }
 
+//Finds center of mass, thrust and rotation & assigns them to the ship object
 function findCenters(ship) {
-	let com = [0, 0], cot = [0, 0], cor = [0, 0];
+	let com = [0, 0], cot = [0, 0], cor = [0, 0]; //(cor is actually center of momentum)
 	let thrust = 0; momentum = 0;
 	
 	ship.parts.forEach(part => {
@@ -65,14 +66,14 @@ function findCenters(ship) {
 		com[0] += center[0]; com[1] += center[1];
 		
 		if (part.hasThrust() && part.power > 0) {
-			let lerpAmount = Math.min(part.power / thrust, 1);
+			let lerpAmount = Math.min(part.power / (thrust + part.power), 1);
 			cot[0] = lerp(cot[0], center[0], lerpAmount);
 			cot[1] = lerp(cot[1], center[1], lerpAmount);
 			thrust += part.power;
 		}
 		
 		if (part.hasMomentum() && part.power > 0) {
-			let lerpAmount = Math.min(part.power / momentum, 1);
+			let lerpAmount = Math.min(part.power / (momentum + part.power), 1);
 			cor[0] = lerp(cor[0], center[0], lerpAmount);
 			cor[1] = lerp(cor[1], center[1], lerpAmount);
 			momentum += part.power;
@@ -83,9 +84,11 @@ function findCenters(ship) {
 	
 	ship.centerOfMass = com;
 	ship.centerOfThrust = cot;
-	ship.centerOfRotation = cor;
+	ship.centerOfMomentum = cor;
 }
 
+//returns true if the ship can only be used in sandbox, else returns false
+//this function should probably be redone
 function checkForIllegalParts(ship) {
 	collisionsArray = [];
 	for (let part of ship.parts) {

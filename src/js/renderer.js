@@ -87,7 +87,7 @@ function renderStats(ship) {
 }
 
 function renderCenters(ship) {
-	let offset = padding - 8;
+	let offset = padding - 8; //I can't think of a better solution   my brain is dying   aaaaaaa help im dying inside because of javascriptus
 	
 	//COM
 	if (comCheckbox.checked) {
@@ -117,7 +117,7 @@ function renderCenters(ship) {
 	
 	//COR
 	if (corCheckbox.checked) {
-		let x = ship.centerOfRotation[0] * totalTileSize + offset, y = ship.centerOfRotation[1] * totalTileSize + offset;
+		let x = ship.centerOfMomentum[0] * totalTileSize + offset, y = ship.centerOfMomentum[1] * totalTileSize + offset;
 		
 		render.strokeStyle = "#5588ff";
 		renderCross(x, y);

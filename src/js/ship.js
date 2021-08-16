@@ -88,5 +88,5 @@ class Ship {
 	
 	centerOfMass = [0, 0];
 	centerOfThrust = [0, 0];
-	centerOfRotation = [0, 0];
+	centerOfMomentum = [0, 0];
 }
