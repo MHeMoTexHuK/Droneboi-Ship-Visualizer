@@ -72,12 +72,14 @@ function findCenters(ship) {
 			thrust += part.power;
 		}
 		
+		/*unused
 		if (part.hasMomentum() && part.power > 0) {
 			let lerpAmount = Math.min(part.power / (momentum + part.power), 1);
 			cor[0] = lerp(cor[0], center[0], lerpAmount);
 			cor[1] = lerp(cor[1], center[1], lerpAmount);
 			momentum += part.power;
 		}
+		*/
 	});
 	com[0] /= ship.parts.length;
 	com[1] /= ship.parts.length;

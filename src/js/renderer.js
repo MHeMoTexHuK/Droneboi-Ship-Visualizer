@@ -115,7 +115,7 @@ function renderCenters(ship) {
 		render.stroke();
 	}
 	
-	//COR
+	/*unused
 	if (corCheckbox.checked) {
 		let x = ship.centerOfMomentum[0] * totalTileSize + offset, y = ship.centerOfMomentum[1] * totalTileSize + offset;
 		
@@ -129,6 +129,7 @@ function renderCenters(ship) {
 		render.lineTo(x + 5, y);
 		render.stroke();
 	}
+	*/
 }
 
 //Used by function above, renders a cross.
