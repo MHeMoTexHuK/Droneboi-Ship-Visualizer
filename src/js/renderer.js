@@ -165,7 +165,7 @@ function forceRenderEverything() {
 	frame = 99999; //To ensure that every block will be rendered, no matter how many blocks are there
 	
 	render.fillStyle = "#37384C";
-	render.fillRect(0, 0, 900, 400);
+	render.fillRect(0, 0, canvasMain.width, canvasMain.height);
 	render.fillStyle = "#00000033";
 	render.fillRect(padding, padding, padding + shipAreaSize, padding + shipAreaSize)
 	
