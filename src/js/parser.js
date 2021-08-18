@@ -56,7 +56,7 @@ function parseKey(key) {
 	findCenters(ship);
 	
 	ship.sandboxOnly = checkForIllegalParts(ship);
-	console.log(ship)
+	//console.log(ship)
 	return ship;
 }
 
@@ -76,8 +76,6 @@ function findCenters(ship) {
 			thrust[part.direction] += part.power;
 		}
 	});
-	
-	console.log(cot)
 	
 	com[0] /= ship.parts.length;
 	com[1] /= ship.parts.length;

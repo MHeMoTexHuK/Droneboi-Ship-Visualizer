@@ -156,6 +156,31 @@ DrawablesMap = {
 		x: 0, y: 96, w: 16, h: 16
 	}, {
 		x:0, y: 16, w: 16, h: 16
+	}),
+	'station block': new PartDrawable({
+		x: 16, y: 96, w: 32, h: 32
+	}, {
+		x:16, y: 32, w: 32, h: 32
+	}),
+	't1 wedge 1x2': new PartDrawable({
+		x: 48, y: 96, w: 16, h: 32
+	}, {
+		x:0, y: 32, w: 16, h: 32
+	}),
+	'medium fuel tank': new PartDrawable({
+		x: 80, y: 0, w: 32, h: 32
+	}, {
+		x:16, y: 32, w: 32, h: 32
+	}),
+	'medium crate': new PartDrawable({
+		x: 80, y: 32, w: 32, h: 32
+	}, {
+		x:16, y: 32, w: 32, h: 32
+	}),
+	'medium battery': new PartDrawable({
+		x: 80, y: 64, w: 32, h: 32
+	}, {
+		x: 16, y: 32, w: 32, h: 32
 	})
 };
 

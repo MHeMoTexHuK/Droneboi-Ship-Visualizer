@@ -28,7 +28,7 @@ function onParseKey() {
 		keyDecoded = window.atob(keyRaw); //base64 to ascii
 		ship = parseKey(keyDecoded);
 		
-		if (!ship.parts) throw new Error("Invalid key"); //simple validation. will work in most cases.
+		if (!ship.parts) throw new Error("Invalid key: parts array is undefined"); //simple validation. will work in most cases.
 		
 		beginRender(ship);
 	} catch (e) {

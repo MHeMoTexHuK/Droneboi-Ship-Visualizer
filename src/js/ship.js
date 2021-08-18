@@ -29,13 +29,16 @@ class Part {
 	};
 	
 	draw(context, addRotation, scale, offsetX, offsetY) {
+		let rotationOffset = this.getRotationOffset(Math.floor(this.rotation / 90)); //will probably break if (rotation % 90 != 0)
+		
 		this.drawable.draw(
 			context, 
-			this.x * totalTileSize + offsetX, 
-			this.y * totalTileSize + offsetY, 
+			(this.x + rotationOffset[0]) * totalTileSize + offsetX,
+			(this.y + rotationOffset[1]) * totalTileSize + offsetY,
 			this.color, 
 			-this.rotation / DegreeToRadian + addRotation,
-			scale
+			scale,
+			this.isFlipped
 		);
 	};
 	
@@ -50,11 +53,25 @@ class Part {
 	hasMomentum() {
 		return this.type == "momentum wheel";
 	}
+	
+	//ugly hack but my brain is dying because i can't solve the multiblock issue. The anchor tile of multiblock
+	//is rotation-dependent and AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA *dies*
+	getRotationOffset(rotation) {
+		if (!this.isMultiblock) return [0, 0]; //no need for excessive calculations
+		let mirror = this.isFlipped ? -1 : 1;
+		switch (rotation) {
+			case 0: return [(this.size[0] - 1) / 2 * mirror, -(this.size[1] - 1) / 2];
+			case 1: return [-(this.size[0] - 1) / 2 * mirror, -(this.size[1] - 1) / 2];
+			case 2: return [-(this.size[0] - 1) / 2 * mirror, (this.size[1] - 1) / 2];
+			case 3: return [(this.size[0] - 1) / 2 * mirror, (this.size[1] - 1) / 2];
+			default: return [0, 0];
+		}
+	}
 };
 
 
 class PartDrawable {
-	base = {x: 0, y: 0, w: 0, h: 0};
+	base = null;
 	mask = null;
 	
 	constructor(base, mask) {
@@ -62,15 +79,29 @@ class PartDrawable {
 		this.mask = mask;
 	}
 
-	draw(context, x, y, color, rotation, scale) {
+	draw(context, x, y, color, rotation, scale, mirrored) {
 		context.save();
 		context.translate(x, y);
 		context.rotate(rotation);
 		
-    	if (this.mask != null) 
-    		context.drawImage(sprites, this.mask.x + color * masks.width, this.mask.y, this.mask.w, this.mask.h, -(this.mask.w * scale) / 2, -(this.mask.h * scale) / 2, this.mask.w * scale, this.mask.h * scale);
-		if (this.base != null) 
-			context.drawImage(bases, this.base.x, this.base.y, this.base.w, this.base.h, -(this.base.w * scale) / 2, -(this.base.h * scale) / 2, this.base.w * scale, this.base.h * scale);
+    	if (this.mask != null) {
+    		context.drawImage(
+    			mirrored ? mirroredMasks : masksTinted,
+    			this.mask.x + color * masks.width, this.mask.y,
+    			this.mask.w, this.mask.h,
+    			-(this.mask.w * scale) / 2, -(this.mask.h * scale) / 2,
+    			this.mask.w * scale, this.mask.h * scale
+    		);
+    	}
+		if (this.base != null) {
+			context.drawImage(
+				mirrored ? mirroredBases : bases,
+				this.base.x, this.base.y,
+				this.base.w, this.base.h,
+				-(this.base.w * scale) / 2, -(this.base.h * scale) / 2, 
+				this.base.w * scale, this.base.h * scale
+			);
+		}
 
 		context.restore();
 	}
@@ -89,5 +120,5 @@ class Ship {
 	momentum = 0;
 	
 	centerOfMass = [0, 0];
-	centersOfThrusts = [[0, 0], [0, 0], [0, 0], [0, 0]];
+	centersOfThrust = [[0, 0], [0, 0], [0, 0], [0, 0]];
 }

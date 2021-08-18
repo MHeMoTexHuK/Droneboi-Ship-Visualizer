@@ -13,19 +13,32 @@ const masks = element("imgMasks");
 const canvas = document.createElement('canvas');
 canvas.width = masks.width;
 canvas.height = masks.height;
-const mctx = canvas.getContext("2d");
-mctx.drawImage(masks, 0, 0);
+const bctx = canvas.getContext("2d");
+bctx.drawImage(masks, 0, 0);
 
-const sprites = element("canvasSprites");
-sprites.width = masks.width * colors.length;
-const sctx = sprites.getContext("2d");
+const masksTinted = element("canvasTintedMasks");
+masksTinted.width = masks.width * colors.length;
+const mctx = masksTinted.getContext("2d");
+
+const mirroredBases = element("canvasMirroredBases");
+mirroredBases.width = bases.width;
+mirroredBases.height = bases.height;
+const mbctx = mirroredBases.getContext("2d");
+
+const mirroredMasks = element("canvasMirroredMasks");
+mirroredMasks.width = masksTinted.width;
+mirroredMasks.height = masksTinted.height;
+const mmctx = mirroredMasks.getContext("2d");
 
 
 window.setTimeout(() => {
+	let start = new Date().getTime();
+	
+	//Tinted masks
 	let c;
 	for (c in colors) {
 		let color = colors[c];
-		let maskData = mctx.getImageData(0, 0, 144, 64);
+		let maskData = bctx.getImageData(0, 0, 144, 64);
 		let pix = maskData.data;
 
 		//tint
@@ -38,7 +51,46 @@ window.setTimeout(() => {
 			pix[i + 2] *= (color[2] / 255) * alpha; // Green component
 		}
 
-		sctx.putImageData(maskData, c * masks.width, 0);
+		mctx.putImageData(maskData, c * masks.width, 0);
 	}
-	console.log("generated " + c + " color spaces")
+	
+	//Mirrored bases
+	mbctx.save();
+	mbctx.translate(mirroredBases.width, 0);
+	mbctx.scale(-1, 1);
+	for (i in DrawablesMap) {
+		let drawable = DrawablesMap[i].base;
+		mbctx.drawImage(
+			bases, 
+			drawable.x, drawable.y, drawable.w, drawable.h,
+			mirroredBases.width - drawable.x - drawable.w, drawable.y,
+			drawable.w, drawable.h
+		);
+	}
+	mbctx.restore();
+	
+	//mirrored masks. holy fox, i feel like im doing something wrong. at least these 2 actions are mostly performed at gpu and are not as slow as tinting (50+ milliseconds!)
+	mmctx.save();
+	mmctx.translate(mirroredMasks.width, 0);
+	mmctx.scale(-1, 1);
+	
+	for (color in colors) {
+		for (i in DrawablesMap) {
+			let drawable = DrawablesMap[i].mask;
+			if (drawable == null) continue;
+			let offset = color * masks.width;
+			mmctx.drawImage(
+				masksTinted,
+				drawable.x + offset, drawable.y,
+				drawable.w, drawable.h,
+				mirroredMasks.width - drawable.x - drawable.w - offset, drawable.y,
+				drawable.w, drawable.h
+			);
+		}
+	}
+	
+	mmctx.restore();
+	
+	let end = new Date().getTime();
+	console.log(`Succesfully generated ${c} color spaces, mirrored bases and mirrored masks. Took ${end - start} ms.`);
 }, 100);
