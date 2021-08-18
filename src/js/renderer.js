@@ -1,5 +1,6 @@
 const canvasMain = element("canvasMain");
 const render = canvasMain.getContext("2d");
+render.imageSmoothingEnabled = false;
 const comCheckbox = element("comCheckbox"),
 	  cotCheckbox = element("cotCheckbox"),
 	  corCheckbox = element("corCheckbox");
@@ -89,50 +90,30 @@ function renderStats(ship) {
 function renderCenters(ship) {
 	let offset = padding - 8; //I can't think of a better solution   my brain is dying   aaaaaaa help im dying inside because of javascriptus
 	
+	//COT
+	if (cotCheckbox.checked) {
+		for (dirCOT of ship.centersOfThrust) {
+			if (dirCOT[0] <= 0 && dirCOT[1] <= 0) continue;
+			
+			let x = dirCOT[0] * totalTileSize + offset, y = dirCOT[1] * totalTileSize + offset;
+		
+			render.strokeStyle = "#ddaa4488";
+			renderCross(x, y);
+			renderSquare(x, y, 5);
+		}
+	}
+	
 	//COM
 	if (comCheckbox.checked) {
 		let x = ship.centerOfMass[0] * totalTileSize + offset, y = ship.centerOfMass[1] * totalTileSize + offset;
 		
 		render.strokeStyle = "#dd7766";
 		renderCross(x, y);
-		render.beginPath();
-		render.arc(x, y, 5, 0, Math.PI * 2);
-		render.stroke();
+		renderCircle(x, y, 5);
 	}
-	
-	//COT
-	if (cotCheckbox.checked) {
-		let x = ship.centerOfThrust[0] * totalTileSize + offset, y = ship.centerOfThrust[1] * totalTileSize + offset;
-		
-		render.strokeStyle = "#ddaa44";
-		renderCross(x, y);
-		render.beginPath();
-		render.moveTo(x + 5, y + 5);
-		render.lineTo(x - 5, y + 5);
-		render.lineTo(x - 5, y - 5);
-		render.lineTo(x + 5, y - 5);
-		render.lineTo(x + 5, y + 5);
-		render.stroke();
-	}
-	
-	/*unused
-	if (corCheckbox.checked) {
-		let x = ship.centerOfMomentum[0] * totalTileSize + offset, y = ship.centerOfMomentum[1] * totalTileSize + offset;
-		
-		render.strokeStyle = "#5588ff";
-		renderCross(x, y);
-		render.beginPath();
-		render.moveTo(x + 5, y);
-		render.lineTo(x, y + 5);
-		render.lineTo(x - 5, y);
-		render.lineTo(x, y - 5);
-		render.lineTo(x + 5, y);
-		render.stroke();
-	}
-	*/
 }
 
-//Used by function above, renders a cross.
+//Drawing methods used by function above
 function renderCross(x, y) {
 	render.beginPath();
 	render.moveTo(padding, y);
@@ -142,14 +123,31 @@ function renderCross(x, y) {
 	render.stroke();
 }
 
+function renderCircle(x, y, radius) {
+	render.beginPath();
+	render.arc(x, y, radius, 0, Math.PI * 2);
+	render.stroke();
+}
+
+function renderSquare(x, y, size) {
+	render.beginPath();
+	render.moveTo(x + size, y + size);
+	render.lineTo(x - size, y + size);
+	render.lineTo(x - size, y - size);
+	render.lineTo(x + size, y - size);
+	render.lineTo(x + size, y + size);
+	render.stroke();
+}
+
+//Generates ship stats
 function createStats(ship) {
 	shipStats = [
-		"Ship header:   " + ship.header,
-		"Spawn offset:  " + "x: " + ship.offset[0] + ", y: " + ship.offset[1],
-		"Blocks:        " + ship.partsAmount + " (" + ship.parts.length + ")",
-		"Total mass:    " + ship.mass,
-		"Thrust:        " + ship.thrust + " (" + (ship.thrust / ship.mass).toFixed(1) + " TWR)",
-		"Momentum:      " + ship.momentum + " (" + (ship.momentum / ship.mass).toFixed(1) + " MWR)",
+		"Ship header:    " + ship.header,
+		"Spawn offset:   " + "x: " + ship.offset[0] + ", y: " + ship.offset[1],
+		"Blocks:         " + ship.partsAmount + " (" + ship.parts.length + ")",
+		"Total mass:     " + ship.mass,
+		"Total thrust:   " + ship.thrust + " (" + (ship.thrust / ship.mass).toFixed(1) + " TWR)",
+		"Total momentum: " + ship.momentum + " (" + (ship.momentum / ship.mass).toFixed(1) + " MWR)",
 		ship.sandboxOnly ? "Singleplayer sandbox only" : "Multiplayer-compatible"
 	];
 	shipStatsSize = 0;

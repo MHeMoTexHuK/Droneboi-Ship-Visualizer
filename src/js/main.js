@@ -33,6 +33,7 @@ function onParseKey() {
 		beginRender(ship);
 	} catch (e) {
 		shipArea.style.display = "none";
+		window.alert("Invalid key");
 		console.log(e);
 		return;
 	}

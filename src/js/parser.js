@@ -1,3 +1,5 @@
+const rotationMap = [0, 2, 3, 1]; //Blame beau for that. 0 is auto, 1 is up, 2 down, 3 left, 4 right
+
 function parseKey(key) {
 	let ship = new Ship();
 	
@@ -7,7 +9,7 @@ function parseKey(key) {
 	ship.header = vehicleValues[0];
 	ship.offset = vehicleValues[1].split("~").map(v => -v);
 	ship.unknownProperty = vehicleValues[2];
-	ship.partsAmount = keyParts[1];
+	ship.partsAmount = +keyParts[1];
 	
 	ship.parts = keyParts[2].split(":").map(partString => {
 		if (partString.length < 1) return;
@@ -15,11 +17,12 @@ function parseKey(key) {
 		
 		let name = partParts[0].toLowerCase();
 		let position = partParts[1].split("~").map(v => +v);
-		if (position[0] < -11 || position[0] > 11 || position[1] < -11 || position[1] > 11) return null; //out of bounds
+		if (position[0] < -11 || position[0] > 11 || position[1] < -11 || position[1] > 11) return; //out of bounds
 		
 		let rotation = +partParts[2];
 		let power = +partParts[3];
 		let color = +partParts[5];
+		let direction = partParts[6] == 0 ? Math.floor(rotation / 90) : rotationMap[partParts[6] - 1];
 		let isFlipped = partParts[7] > 0 ? true : false;
 		let drawable = getPartDrawable(name);
 		let size = getPartSize(name);
@@ -33,6 +36,7 @@ function parseKey(key) {
 			rotation, 
 			power, 
 			color,
+			direction,
 			isFlipped,
 			size,
 			mass
@@ -52,41 +56,34 @@ function parseKey(key) {
 	findCenters(ship);
 	
 	ship.sandboxOnly = checkForIllegalParts(ship);
-	//console.log(ship)
+	console.log(ship)
 	return ship;
 }
 
 //Finds center of mass, thrust and rotation & assigns them to the ship object
 function findCenters(ship) {
-	let com = [0, 0], cot = [0, 0], cor = [0, 0]; //(cor is actually center of momentum)
-	let thrust = 0; momentum = 0;
+	let com = [0, 0], cot = [[0, 0], [0, 0], [0, 0], [0, 0]];
+	let thrust = [0, 0, 0, 0];
 	
 	ship.parts.forEach(part => {
 		let center = part.getCOM();
 		com[0] += center[0]; com[1] += center[1];
 		
 		if (part.hasThrust() && part.power > 0) {
-			let lerpAmount = Math.min(part.power / (thrust + part.power), 1);
-			cot[0] = lerp(cot[0], center[0], lerpAmount);
-			cot[1] = lerp(cot[1], center[1], lerpAmount);
-			thrust += part.power;
+			let lerpAmount = Math.min(part.power / (thrust[part.direction] + part.power), 1);
+			cot[part.direction][0] = lerp(cot[part.direction][0], center[0], lerpAmount);
+			cot[part.direction][1] = lerp(cot[part.direction][1], center[1], lerpAmount);
+			thrust[part.direction] += part.power;
 		}
-		
-		/*unused
-		if (part.hasMomentum() && part.power > 0) {
-			let lerpAmount = Math.min(part.power / (momentum + part.power), 1);
-			cor[0] = lerp(cor[0], center[0], lerpAmount);
-			cor[1] = lerp(cor[1], center[1], lerpAmount);
-			momentum += part.power;
-		}
-		*/
 	});
+	
+	console.log(cot)
+	
 	com[0] /= ship.parts.length;
 	com[1] /= ship.parts.length;
 	
 	ship.centerOfMass = com;
-	ship.centerOfThrust = cot;
-	ship.centerOfMomentum = cor;
+	ship.centersOfThrust = cot;
 }
 
 //returns true if the ship can only be used in sandbox, else returns false

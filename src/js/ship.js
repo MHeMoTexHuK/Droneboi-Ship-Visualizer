@@ -4,6 +4,7 @@ class Part {
 	y = 0;
 	rotation = 0;
 	power = 100;
+	direction = 0;
 	color = 0;
 	isFlipped = false;
 	isMultiblock = false;
@@ -12,7 +13,7 @@ class Part {
 	
 	drawable = null;
 	
-	constructor(type, drawable, x, y, rotation, power, color, isFlipped, size, mass) {
+	constructor(type, drawable, x, y, rotation, power, color, direction, isFlipped, size, mass) {
 		this.type = type;
 		this.drawable = drawable;
 		this.x = x;
@@ -20,6 +21,7 @@ class Part {
 		this.rotation = rotation;
 		this.power = power;
 		this.color = color;
+		this.direction = direction;
 		this.isFlipped = isFlipped;
 		this.isMultiblock = size[0] > 1 || size[1] > 1;
 		this.size = size;
@@ -87,6 +89,5 @@ class Ship {
 	momentum = 0;
 	
 	centerOfMass = [0, 0];
-	centerOfThrust = [0, 0];
-	centerOfMomentum = [0, 0];
+	centersOfThrusts = [[0, 0], [0, 0], [0, 0], [0, 0]];
 }
