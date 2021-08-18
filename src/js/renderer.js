@@ -18,13 +18,13 @@ function beginRender(ship) {
 	shipVar = ship; //for other functions
 	
 	frame = 0;
-	render.font = "20px monospace";
+	render.font = "40px monospace";
 	createStats(ship)
 	
 	//Recursive call, cancelled on the next beginRender() call
 	let lastCall = new Date().getTime();
 	lastTimeout = window.setTimeout(self = () => {
-		render.clearRect(0, 0, 900, 400);
+		render.clearRect(0, 0, canvasMain.width, canvasMain.height);
 		render.fillStyle = "#00000033";
 		render.fillRect(padding, padding, padding + shipAreaSize, padding + shipAreaSize)
 		
@@ -49,10 +49,10 @@ function renderShip(ship) {
 	for (let i = 0; i < Math.min(frame * 3, ship.parts.length); i++) {
 		let part = ship.parts[i];
 		let animationFrame = Math.max(frame - i / 3, 0);
-		let scale = 2.4 / (Math.max(animationFrame, 3) * 0.15);
+		let scale = (2.4 / (Math.max(animationFrame, 3) * 0.15)) * 2;
 		let addRotation = 1 / (animationFrame * 0.3);
 		
-		part.draw(render, addRotation < 0.1 ? 0 : addRotation, scale < 1.1 ? 1 : scale, padding, padding);
+		part.draw(render, addRotation < 0.1 ? 0 : addRotation, scale < 2.2 ? 2 : scale, padding, padding);
 	}
 }
 
@@ -79,7 +79,7 @@ function renderStats(ship) {
 		render.fillText(
 			shipStats[stat].substring(0, symbols), 
 			statsStartX + statsPadding, 
-			padding + 20 + (statsHeight + statsMarginTop) * stat
+			padding + 40 + (statsHeight + statsMarginTop) * stat
 		);
 	
 		i += symbols;
@@ -88,8 +88,9 @@ function renderStats(ship) {
 }
 
 function renderCenters(ship) {
-	let offset = padding - 8; //I can't think of a better solution   my brain is dying   aaaaaaa help im dying inside because of javascriptus
+	let offset = padding - 16; //I can't think of a better solution   my brain is dying   aaaaaaa help im dying inside because of javascriptus
 	
+	render.translate(0.5, 0.5); //render.drawH(...) methods draw everything with 0.5px offset. 
 	//COT
 	if (cotCheckbox.checked) {
 		for (dirCOT of ship.centersOfThrust) {
@@ -97,9 +98,9 @@ function renderCenters(ship) {
 			
 			let x = dirCOT[0] * totalTileSize + offset, y = dirCOT[1] * totalTileSize + offset;
 		
-			render.strokeStyle = "#ddaa4488";
+			render.strokeStyle = "#ddaa44";
 			renderCross(x, y);
-			renderSquare(x, y, 5);
+			renderSquare(x, y, 8);
 		}
 	}
 	
@@ -107,10 +108,11 @@ function renderCenters(ship) {
 	if (comCheckbox.checked) {
 		let x = ship.centerOfMass[0] * totalTileSize + offset, y = ship.centerOfMass[1] * totalTileSize + offset;
 		
-		render.strokeStyle = "#dd7766";
+		render.strokeStyle = "#dd7744";
 		renderCross(x, y);
-		renderCircle(x, y, 5);
+		renderCircle(x, y, 8);
 	}
+	render.translate(-0.5, -0.5)
 }
 
 //Drawing methods used by function above

@@ -2,17 +2,17 @@ function element(id) { return document.getElementById(id) };
 
 //globals
 const   maxBuildingArea = 21,
-		tileSize = 16,
+		tileSize = 32,
 		tileMargin = 0,
 		totalTileSize = tileSize + tileMargin,
 		
 		shipAreaSize = totalTileSize * maxBuildingArea,
-		padding = 7,
+		padding = 14,
 		
 		statsStartX = padding * 3 + shipAreaSize,
-		statsPadding = 3,
-		statsHeight = 20 + statsPadding * 2,
-		statsMarginTop = 6;
+		statsPadding = 6,
+		statsHeight = 40 + statsPadding * 2,
+		statsMarginTop = 12;
 
 const DegreeToRadian = 180 / Math.PI;
 
