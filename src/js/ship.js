@@ -59,11 +59,13 @@ class Part {
 	getRotationOffset(rotation) {
 		if (!this.isMultiblock) return [0, 0]; //no need for excessive calculations
 		let mirror = this.isFlipped ? -1 : 1;
+		let add = this.size[0] - this.size[1]; //Required because idk, i will also have to do that for 1st and 3d case if 2x1 blocks will appear. Fortunately, there's none.
+		
 		switch (rotation) {
 			case 0: return [(this.size[0] - 1) / 2 * mirror, -(this.size[1] - 1) / 2];
-			case 1: return [-(this.size[0] - 1) / 2 * mirror, -(this.size[1] - 1) / 2];
+			case 1: return [-(this.size[0] - 1 + add) / 2 * mirror, -(this.size[1] - 1 + add) / 2];
 			case 2: return [-(this.size[0] - 1) / 2 * mirror, (this.size[1] - 1) / 2];
-			case 3: return [(this.size[0] - 1) / 2 * mirror, (this.size[1] - 1) / 2];
+			case 3: return [(this.size[0] - 1 + add) / 2 * mirror, (this.size[1] - 1 + add) / 2];
 			default: return [0, 0];
 		}
 	}
