@@ -25,12 +25,7 @@ window.onload = function() {
 	if (window.location.search) {
 		let argument = decodeURI(window.location.search.toString().split("?")[1]);
 		
-		if (argument) {
-			beginVisualization(argument);
-			
-			element("ogDescription").content = "";
-			element("ogImage").content = saveImage();
-		}
+		if (argument) beginVisualization(argument);
 	}
 }
 	
