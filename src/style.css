@@ -43,6 +43,13 @@ tiny {
 	height: 300px;
 }
 
+#source {
+	color: #62F3FF;
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 8pt;
+	display: block;
+}
+
 #UwU {
 	color: #ffffff33;
 }
