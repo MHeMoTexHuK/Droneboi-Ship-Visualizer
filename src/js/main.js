@@ -46,9 +46,17 @@ function onParseKey() {
 function onSaveCanvas() {
 	forceRenderEverything();
 	
+	let w = statsStartX + widestStat;
+	let h = Math.max(shipAreaSize + padding * 2, shipStats.length * (statsHeight + statsMarginTop));
+	
+	let bufferCtx = bufferCanvas.getContext("2d");
+	bufferCanvas.width = w; bufferCanvas.height = h;
+	bufferCtx.fillRect(0, 0, w, h);
+	bufferCtx.drawImage(canvasMain, 0, 0, w, h, 0, 0, w, h);
+	
 	let link = document.createElement('a');
 	link.download = "Droneboi key.png";
-	link.href = canvasMain.toDataURL("image/png;base64");
+	link.href = bufferCanvas.toDataURL("image/png;base64");
   
 	//fake click event
 	if (document.createEvent) {
@@ -59,5 +67,5 @@ function onSaveCanvas() {
 		link.dispatchEvent(e);
 	} else if (lnk.fireEvent) {
 		link.fireEvent("onclick");
-	}
+	};
 }

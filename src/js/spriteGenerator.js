@@ -10,10 +10,10 @@ const bases = element("imgBases");
 const masks = element("imgMasks");
 
 //buffer cus i can't get image data of <img>
-const canvas = document.createElement('canvas');
-canvas.width = masks.width;
-canvas.height = masks.height;
-const bctx = canvas.getContext("2d");
+const bufferCanvas = element("canvasBuffer");
+bufferCanvas.width = masks.width;
+bufferCanvas.height = masks.height;
+const bctx = bufferCanvas.getContext("2d");
 bctx.drawImage(masks, 0, 0);
 
 const masksTinted = element("canvasTintedMasks");
