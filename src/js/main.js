@@ -19,13 +19,26 @@ const DegreeToRadian = 180 / Math.PI;
 var keyInput = element("key");
 var shipLayout = element("shipArea");
 
-//When the user presses "parse" button
-function onParseKey() {
-	let keyRaw = keyInput.value;
+window.onload = function() {
+	generateSprites();
+	
+	if (window.location.search) {
+		let argument = decodeURI(window.location.search.toString().split("?")[1]);
+		
+		if (argument) {
+			beginVisualization(argument);
+			
+			element("ogDescription").content = "";
+			element("ogImage").content = saveImage();
+		}
+	}
+}
+	
+function beginVisualization(key) {
 	let ship;
 	
 	try {
-		keyDecoded = window.atob(keyRaw); //base64 to ascii
+		keyDecoded = window.atob(key); //base64 to ascii
 		ship = parseKey(keyDecoded);
 		
 		if (!ship.parts) throw new Error("Invalid key: parts array is undefined"); //simple validation. will work in most cases.
@@ -41,9 +54,7 @@ function onParseKey() {
 	shipArea.style.display = "block";
 }
 
-
-//When the user presses the "save as image" button. Stackoverflow went brrrr.
-function onSaveCanvas() {
+function saveImage() {
 	forceRenderEverything();
 	
 	let w = statsStartX + widestStat;
@@ -54,9 +65,21 @@ function onSaveCanvas() {
 	bufferCtx.fillRect(0, 0, w, h);
 	bufferCtx.drawImage(canvasMain, 0, 0, w, h, 0, 0, w, h);
 	
+	return bufferCanvas.toDataURL("image/png;base64");
+}
+
+
+//When the user presses the "parse" button
+function onParseKey() {
+	let keyRaw = keyInput.value;
+	beginVisualization(keyRaw);
+}
+
+//When the user presses the "save as image" button. Stackoverflow went brrrr.
+function onSaveCanvas() {
 	let link = document.createElement('a');
 	link.download = "Droneboi key.png";
-	link.href = bufferCanvas.toDataURL("image/png;base64");
+	link.href = saveImage();
   
 	//fake click event
 	if (document.createEvent) {

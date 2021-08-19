@@ -30,8 +30,7 @@ mirroredMasks.width = masksTinted.width;
 mirroredMasks.height = masksTinted.height;
 const mmctx = mirroredMasks.getContext("2d");
 
-
-window.setTimeout(() => {
+function generateSprites() {
 	let start = new Date().getTime();
 	
 	//Tinted masks
@@ -93,4 +92,4 @@ window.setTimeout(() => {
 	
 	let end = new Date().getTime();
 	console.log(`Succesfully generated ${c} color spaces, mirrored bases and mirrored masks. Took ${end - start} ms.`);
-}, 100);
+};
